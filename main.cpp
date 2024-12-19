@@ -302,7 +302,7 @@ public:
     fuelSlider.setBackgroundColor(sf::Color(115, 115, 115));
     fuelSlider.setPos(800, 800);
     setDefaultRect({0, 0, 52, 89});
-sprite.scale(0.5,0.5);
+    sprite.scale(0.5, 0.5);
   }
   void Kill() {
     using namespace std::literals;
@@ -966,8 +966,7 @@ std::tuple<bool, bool> StartLevel(sf::RenderWindow &window, int level) {
   std::vector<std::shared_ptr<Tickable>> tickable = {spaceship};
   std::vector<std::shared_ptr<GameObject>> colisable = {spaceship};
   std::shared_ptr<Player> player = std::make_shared<Player>(
-      std::filesystem::path("./assets/astronaut.png"),
-      sf::Vector2f{0, 0});
+      std::filesystem::path("./assets/astronaut.png"), sf::Vector2f{0, 0});
   std::shared_ptr<Asteroids> asteroids =
       std::make_shared<Asteroids>(player, level);
   drawable.push_back(asteroids);
@@ -1052,9 +1051,9 @@ int main() {
     Text txt(std::make_shared<std::function<std::string()>>(
         [&level, &isWon, &isDead]() {
           if (isWon)
-            return fmt::format("Level {}, Completed!", level);
+            return fmt::format("Level {}, Completed!", level + 1);
           if (isDead)
-            return fmt::format("Level {}, Failed!", level);
+            return fmt::format("Level {}, Failed!", level + 1);
           return fmt::format("WTF just happened");
         }));
     {
