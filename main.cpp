@@ -16,6 +16,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <chrono>
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <filesystem>
 #include <fmt/format.h>
@@ -26,7 +27,9 @@
 #include <memory>
 #include <string>
 #include <thread>
-
+#ifndef uint
+using uint = unsigned int;
+#endif
 int WINDOW_WIDTH = 1980;
 int WINDOW_HEIGHT = 1080;
 float VP_WIDTH = 0;
@@ -50,11 +53,12 @@ template <typename T> T PointLen(sf::Vector2<T> p0, sf::Vector2<T> p1) {
 class TextureProvider {
 public:
   static sf::Texture &getTexture(std::filesystem::path path) {
-    auto texture = textures.find(path.c_str());
+    auto pathstring = path.string(); 
+    auto texture = textures.find(pathstring.c_str());
     if (texture != textures.end()) {
       return (*texture).second;
     }
-    textures[path] = generateTexture(path);
+    textures[pathstring] = generateTexture(path);
     return getTexture(path);
   }
 
@@ -63,8 +67,9 @@ public:
     if (defaultFont)
       return defaultFont;
     defaultFont = std::make_shared<sf::Font>();
-    defaultFont->loadFromFile(
-        std::filesystem::absolute("./fonts/Audiowide-Regular.ttf"));
+    auto path = std::filesystem::absolute("./fonts/Audiowide-Regular.ttf").string(); 
+    defaultFont->loadFromFile(path
+        );
     std::cout << "default Font loaded" << std::endl;
     return getDefaultFont();
   }
@@ -72,7 +77,8 @@ public:
 private:
   static sf::Texture generateTexture(std::filesystem::path path) {
     sf::Texture tmp;
-    tmp.loadFromFile(std::filesystem::absolute(path));
+    auto pathString = std::filesystem::absolute(path).string(); 
+    tmp.loadFromFile(pathString.c_str());
     tmp.setSmooth(true);
     return tmp;
   }
@@ -960,8 +966,8 @@ std::tuple<bool, bool> StartLevel(sf::RenderWindow &window, int level) {
 
   fmt::println("Drawing the stars on the sky");
   auto bg = std::make_shared<Background>(
-      1e6, sf::Vector2i{StarsSize, StarsSize},
-      sf::Vector2i{StarsSize / 2, StarsSize / 2}, window);
+      1e6, sf::Vector2i(StarsSize, StarsSize),
+      sf::Vector2i(StarsSize / 2, StarsSize / 2), window);
   std::vector<std::shared_ptr<Drawable>> drawable = {bg, spaceship};
   std::vector<std::shared_ptr<Tickable>> tickable = {spaceship};
   std::vector<std::shared_ptr<GameObject>> colisable = {spaceship};
