@@ -953,7 +953,7 @@ private:
 
 std::tuple<bool, bool> StartLevel(sf::RenderWindow &window, int level) {
   std::cout << "Hello from the stars" << std::endl;
-  const uint StarsSize = 32768;
+  const uint StarsSize = 16384;
   fmt::println("Placing the Spaceship");
   float minDistanceFromPlayer = 512.0f + level * 100.0f;
   std::shared_ptr<Spaceship> spaceship =
